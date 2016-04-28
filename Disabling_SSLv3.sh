@@ -43,6 +43,21 @@ case "${2}" in
         ;;
 esac
 
+case "${3}" in
+        outputFormat)
+                echo "Status2"
+        ;;
+        *)
+        status=$(ssh -q -o ConnectTimeout=20 -o StrictHostKeyChecking=no ${3} "cat /var/cpanel/conf/dovecot/main")
+                entry=$(ssh -q -o ConnectTimeOut=20 -o StrictHostKeyChecking=no ${3} "grep -i "SSL_protocol *" /var/cpanel/conf/dovecot/main")
+                if [ "x${entry}" != "SSL_protocol !SSLv2 !SSLv3" ]
+                then
+                change=$(ssh -q -o ConnectTimeOut=20 -o StrictHostKeyChecking=no ${3} "sed -i 's/SSL_protocol */SSL_protocol !SSLv2 !SSLv3/' /var/cpanel/conf/dovecot/main")
+                output=$(echo "")
+                fi
+        service=$(ssh -q -o ConnectTimeOut=20 -o StrictHostKeyChecking=no ${3} "/usr/local/cpanel/whostmgr/bin/whostmgr2 savedovecotsetup")
+        ;;
+esac
 
 echo "${outPut}"
 
