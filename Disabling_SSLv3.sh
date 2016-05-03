@@ -49,7 +49,7 @@ case "${1}" in
 
 	status=$(ssh -q -o ConnectTimeout=20 -o StrictHostKeyChecking=no ${1} "cat /var/cpanel/pureftpd/main")
                 entry=$(ssh -q -o ConnectTimeOut=20 -o StrictHostKeyChecking=no ${1} "grep -i "TLSCipherSuite" /var/cpanel/conf/pureftpd/main")
-                if [ "x${entry}" != "HIGH:MEDIUM:+TLSv1:!SSLv2:!SSLv3" ]
+                if [ "x${entry}" != "TLSCipherSuite HIGH:MEDIUM:+TLSv1:!SSLv2:!SSLv3" ]
                 then
                 change=$(ssh -q -o ConnectTimeOut=20 -o StrictHostKeyChecking=no ${1} "sed -i 's/TLSCipherSuite */TLSCipherSuite  HIGH:MEDIUM:+TLSv1:!SSLv2:!SSLv3/' /var/cpanel/conf/pureftpd/main")
                 output=$(echo "Changed")
