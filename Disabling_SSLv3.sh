@@ -11,16 +11,16 @@ case "${1}" in
         ;;
         *)
 
-        status=$(ssh -q -o ConnectTimeout=20 -o StrictHostKeyChecking=no ${1} "cat /var/cpanel/conf/apache/local")
-	if [ ! -f "/var/cpanel/conf/apache/local" ]
+        status=$(ssh -q -o ConnectTimeout=20 -o StrictHostKeyChecking=no ${1} "cat /var/cpanel/conf/apache/local &> /dev/null || echo err")
+	if [ "x${status}" = "xerr" ]
 	then 
-		ssh -q -o ConnectTimeout=20 -o StrictHostKeyChecking=no ${1} "touch /var/cpanel/conf/apache/local && echo "SSLProtocol All -SSLv2 -SSLv3" > /var/cpanel/conf/apache/local "
+		ssh -q -o ConnectTimeout=20 -o StrictHostKeyChecking=no ${1} "touch /var/cpanel/conf/apache/local && echo "SSLProtocol All -SSLv2 -SSLv3" > /var/cpanel/conf/apache/local"
 		output=$(echo "Created")
 	else
 		entry=$(ssh -q -o ConnectTimeOut=20 -o StrictHostKeyChecking=no ${1} "grep -i "SSLProtocol all.*" /var/cpanel/conf/apache/local")
 		if [ "x${entry}" = "x" ]
 		then 
-		change=$(ssh -q -o ConnectTimeOut=20 -o StrictHostKeyChecking=no ${1} "sed -i 's/SSLProtocol all.*/SSLProtocol All -SSLv2 -SSLv3/' /var/cpanel/conf/apache/local")
+		ssh -q -o ConnectTimeOut=20 -o StrictHostKeyChecking=no ${1} "sed -i 's/SSLProtocol all.*/SSLProtocol All -SSLv2 -SSLv3/' /var/cpanel/conf/apache/local"
 		output=$(echo "Changed")
 		fi
  	fi
